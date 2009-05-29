@@ -1,0 +1,27 @@
+<mt:setvar name="page_title" value="<__trans phrase="Upload Complete">">
+<mt:include name="dialog/header.tmpl">
+
+
+<ul>
+  <li><a href="?__mode=upload&blog_id=<TMPL_VAR NAME=BLOG_ID>">Upload another photo</a></li>
+  <li><a href="<TMPL_VAR NAME=PERMALINK>">View this photo</a></li>
+</ul>
+
+<div style="border-top: 1px solid #e9dece; border-right:1px solid #B6AD9D; border-bottom:1px solid #B6AD9D; border-left:  1px solid #e9dece; background-color: #fff; padding: 8px; width: <TMPL_VAR NAME=WIDTH>px">
+  <TMPL_VAR NAME=FULL>
+</div>
+
+<form method="post" action="<mt:var name="script_url">" id="upload-form">
+    <div class="actions-bar">
+        <div class="actions-bar-inner pkg actions">
+            <button
+                onclick="closeDialog(); return false"
+                type="submit"
+                accesskey="x"
+                title="<__trans phrase="Finish (x)">"
+                ><__trans phrase="Finish"></button>
+        </div>
+    </div>
+</form>
+
+<mt:include name="dialog/footer.tmpl">

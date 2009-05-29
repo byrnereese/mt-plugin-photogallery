@@ -1,0 +1,114 @@
+.photo-listing ul {
+  margin-left: 53px;
+  padding: 2.7px 0 2.7px 0;
+}
+.photo-listing ul li {
+  float: left;
+  padding: 2.7px;
+}
+.widget-archive.widget-archive-album ul li {
+  border-bottom: 1px solid #E7EEF3;
+  width: 160px;
+  float: left;
+  vertical-align: middle;
+  height: 60px;
+  overflow: hidden;
+  margin: 0 5px 0 0;
+}
+.widget-archive.widget-archive-album ul li a {
+  border: 0;
+  display: normal;
+}
+.widget-archive.widget-archive-album ul li span {
+  display: block;
+  float: left;
+}
+
+.widget-archive.widget-archive-album ul li span.photo {
+  width: 50px;
+}
+.widget-archive.widget-archive-album ul li span.album-name {
+  width: 100px;
+  margin-left: 8px;
+}
+.photo img { border: 1px solid #ccc; padding: 2px; }
+
+
+
+.gallery-item { display: block !important; }
+
+/*  
+    root element for the scrollable.  
+    when scrolling occurs this element stays still.  
+*/ 
+div.scrollable { 
+    /* required settings */ 
+    position:relative; 
+    overflow:hidden;          
+    width: 300px;
+    height:95px; 
+    margin-top: 24px;
+} 
+a.next { margin-top: 0px; margin-left: 5px; position: absolute; right: 20px; }
+a.prev { margin-top: 0px; margin-right: 5px;  position: absolute; }
+ 
+/*  
+    root element for scrollable items. Must be absolutely positioned 
+    and it should have a super large width to accomodate scrollable items. 
+    it's enough that you set width and height for the root element and 
+    not for this element. 
+*/ 
+div.scrollable div.items {     
+    /* this cannot be too large */ 
+    width:20000em;     
+    position:absolute;         
+} 
+ 
+/*  
+    a single item. must be floated on horizontal scrolling 
+    typically this element is the one that *you* will style 
+    the most. 
+*/ 
+div.scrollable div.items div { 
+    float:left; 
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    padding: 3px;
+} 
+ 
+/* you may want to setup some decorations to active item */ 
+div.items div.active { 
+    border:1px inset #ccc;         
+    background-color:#fff; 
+}
+
+/* this makes it possible to add next button beside scrollable */
+div.scrollable {
+	float:left;		
+}
+
+/* prev, next, prevPage and nextPage buttons */
+a.prev, a.next, a.prevPage, a.nextPage {
+	display:block;
+	width:18px;
+	height:18px;
+	background:url(left.png) no-repeat;
+	float:left;
+	cursor:pointer;
+}
+
+/* mouseover state */
+a.prev:hover, a.next:hover, a.prevPage:hover, a.nextPage:hover {
+	background-position:0px -18px;		
+}
+
+/* disabled navigational button */
+a.disabled {
+	visibility:hidden !important;		
+}
+
+/* next button uses another background image */
+a.next, a.nextPage {
+	background-image:url(right.png);
+        clear:right;
+}

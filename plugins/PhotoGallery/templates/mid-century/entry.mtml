@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" id="sixapart-standard">
+<head>
+    <$mt:include module="<__trans phrase="HTML Head">"$>
+    <MTEntryPrevious><link rel="prev" href="<$MTEntryPermalink$>" title="<$MTEntryTitle encode_html="1"$>" rel="bookmark" /></MTEntryPrevious>
+    <MTEntryNext><link rel="next" href="<$MTEntryPermalink$>" title="<$MTEntryTitle encode_html="1"$>" rel="bookmark" /></MTEntryNext>
+    <$MTEntryTrackbackData$>
+    <title><$MTEntryTitle encode_html="1"$> - <$MTBlogName encode_html="1"$></title>
+</head>
+<body id="<$mt:BlogTemplateSetID$>" class="mt-entry-archive <$MTVar name="page_layout"$>" onload="mtEntryOnLoad()">
+    <div id="container">
+        <div id="container-inner">
+
+
+            <$mt:include module="<__trans phrase="Banner Header">"$>
+
+
+            <div id="content">
+                <div id="content-inner">
+
+
+                    <div id="alpha">
+                        <div id="alpha-inner">
+
+
+                            <div id="entry-<$MTEntryID$>" class="entry-asset asset hentry">
+                                <div class="asset-header">
+                                    <h1 id="page-title" class="asset-name entry-title"><$MTEntryTitle$></h1>
+                                        <div class="asset-meta">
+                                            <div class="entry-meta-date"><abbr class="published" title="<$MTEntryDate format_name="iso8601"$>"><$MTEntryDate format="<span class='day'>%e</span> %b %Y"$></abbr></div>
+                                        </div>
+                                </div>
+
+                                <div class="asset-content entry-content">
+                                     <div class="asset-body">
+                                         <MTInclude module="Photo Macro">
+                                         <MTEntryAssets lastn="1">
+                                         <$MTGetVar name="photo" max_size="525"$>
+                                         </MTEntryAssets>
+                                         <p><$MTEntryBody$></p>
+                                     </div>
+                                </div>
+
+                                <div class="asset-footer"><div class="asset-footer-inner">
+                                    <p>Posted by <$MTEntryAuthorLink show_hcard="1"$> on <$MTEntryDate format="%A, %x at %X"$><MTIfPingsActive><span class="entry-meta-trackbackcount"> | <a href="<$MTEntryPermalink$>#trackback" class="trackback-count"><__trans phrase="[_1] <span>TrackBacks</span>" params="<$MTEntryTrackbackCount$>"></a></span></MTIfPingsActive></p>
+                                    <p><MTIfNonEmpty tag="EntryCategory"><__trans phrase="Album: "><MTEntryCategories glue=', '><a href="<$MTCategoryArchiveLink$>" rel="tag"><$MTCategoryLabel$></a></MTEntryCategories></MTIfNonEmpty>
+                                    <MTEntryIfTagged><__trans phrase="and tagged ">
+                                            <MTEntryTags glue=', '><a href="<$MTTagSearchLink$>" rel="tag"><$MTTagName$></a></MTEntryTags>
+                                        
+                                    </MTEntryIfTagged>
+                                    </p>
+                                    <MTEntryAssets lastn="1"><p>Download original: <a href="<$MTAssetURL$>"><mt:AssetProperty property="image_width"> x <mt:AssetProperty property="image_height"></a></p></MTEntryAssets>
+
+                                </div></div>
+                            </div>
+
+
+                    <$MTInclude module="<__trans phrase="Trackbacks">"$>
+                    <$MTInclude module="<__trans phrase="Comments">"$>
+
+
+                        </div>
+                    </div>
+
+
+                    <$MTInclude module="<__trans phrase="Sidebar">"$>
+
+
+                </div>
+            </div>
+
+
+            <$mt:include module="<__trans phrase="Banner Footer">"$>
+
+
+        </div>
+    </div>
+    <div id="overlay"></div>
+    <div id="dialog"><div id="dialog-inner">
+        <div id="dialog-content"></div>
+        <a href="javascript:dialogClose();" id="dialog-close"><__trans phrase="Close"></a>
+    </div></div>
+</body>
+</html>

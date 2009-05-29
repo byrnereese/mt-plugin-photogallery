@@ -1,0 +1,27 @@
+<mt:IfArchiveTypeEnabled archive_type="Category">
+<div class="widget-archive widget-archive-album widget">
+    <h3 class="widget-header">Albums</h3>
+    <div class="widget-content">
+    <mt:TopLevelCategories>
+        <mt:SubCatIsFirst>
+        <ul class="widget-list">
+        </mt:SubCatIsFirst>
+        <mt:IfNonZero tag="mt:CategoryCount">
+            <li class="widget-list-item">
+<mt:setvarblock name="label"><$mt:CategoryLabel$></mt:setvarblock>
+<mt:entries category="$label" lastn="1">
+<mt:entryassets lastn="1">
+<span class="photo"><a href="<$mt:CategoryArchiveLink$>"><img src="<mt:assetthumbnailurl width="45"square="1">" width="45" height="45" /></a></span>
+<span class="album-name"><a href="<$mt:CategoryArchiveLink$>"><$mt:CategoryLabel$> (<$mt:CategoryCount$>)</a></span>
+</mt:entryassets>
+</mt:entries>
+        </mt:IfNonZero>
+        <$mt:SubCatsRecurse$>
+            </li>
+        <mt:SubCatIsLast>
+        </ul>
+        </mt:SubCatIsLast>
+    </mt:TopLevelCategories>
+    </div>
+</div>
+</mt:IfArchiveTypeEnabled>

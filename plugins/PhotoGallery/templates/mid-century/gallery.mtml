@@ -1,0 +1,38 @@
+<mt:setvarblock name="label"><mt:EntryCategory></mt:setvarblock>
+<mt:setvarblock name="this_id"><mt:EntryID></mt:setvarblock>
+
+<div class="widget-gallery widget">
+    <div class="inner pkg">
+    <h3 class="widget-header">Browse this Album</h3>
+    <div class="widget-content"><div class="widget-content-inner">
+    <a class="prev"></a>
+    <div class="scrollable">
+      <div class="items">
+<mt:Entries category="$label" sort_order="created_on">
+<mt:if tag="EntryID" eq="$this_id"><mt:setvarblock name="start"><mt:var name="__counter__"></mt:setvarblock></mt:if>
+<mt:EntryAssets lastn="1">
+        <div>
+          <a href="<mt:EntryPermalink>"><img src="<$mt:AssetThumbnailURL square="1" width="85"$>" class="asset-img-thumb" alt="<$mt:EntryTitle encode_html="1"$>" title="<$mt:EntryTitle encode_html="1"$>" /></a>
+        </div>
+</mt:EntryAssets></mt:Entries>
+      </div>
+    </div>
+    <a class="next"></a>
+
+    </div></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$('document').ready(function() {         
+    // initialize scrollable  
+    var start = <mt:var name="start" op="sub" value="1">;
+    $('.scrollable').scrollable({
+      clickable: false,
+      size: 3,
+      alert: false
+    });
+    var api = $('.scrollable').scrollable();
+    api.move(start);
+}); 
+</script>

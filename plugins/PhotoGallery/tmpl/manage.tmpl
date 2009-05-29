@@ -1,0 +1,123 @@
+<mt:setvar name="page_title" value="Manage Photos">
+
+<mt:setvarblock name="html_head" append="1">
+  <script type="text/javascript"><!--
+    function onUploadDialogClose() {
+//      window.location.reload(true);
+       window.location.href = '<mt:var name="script_url">?__mode=PhotoGallery.photos&blog_id=<mt:var name="blog_id">';
+    }
+    var tableSelect;
+    function init() {
+        tableSelect = new TC.TableSelect("photo-listing-table");
+    }
+    TC.attachLoadEvent(init);
+    function selectPhoto(id) {
+      var p = TC.elementOrId('photo-' + id);
+      var cb = TC.elementOrId('photo-cb-' + id);
+      if (!cb.checked) {
+        TC.addClassName(p, "selected");
+        cb.checked = true;
+      } else {
+        TC.removeClassName(p, "selected");
+        cb.checked = false;
+      }
+    }
+    function editPhoto(id,blog_id) {
+      openDialog(null,'PhotoGallery.edit','id='+id+'&blog_id='+blog_id); 
+      /*
+      TODO - stop event propagation
+      var e = window.parent.event;
+      e.cancelBubble = true;
+      if (e.stopPropagation) e.stopPropagation();
+      */
+    }
+    function deletePhotos() {
+      var params = Array();
+      params['mode'] = 'PhotoGallery.delete';
+      params['type'] = 'asset.photo';
+      doRemoveItems(getByID('photo-listing-form'), 'photo', 'photos', 'id', new Array(), params );
+    }
+  </script>
+  <link rel="stylesheet" href="<mt:StaticWebPath>plugins/PhotoGallery/app/styles.css" type="text/css" /></head>
+
+</mt:setvarblock>
+
+<mt:setvarblock name="action_buttons">
+                <a href="javascript:void(0)"
+                    onclick="deletePhotos(); return false;" name="delete_asset" value="Delete"
+                    accesskey="x"
+                    title="Delete Photos"
+                    ><__trans phrase="Delete"></a>
+</mt:setvarblock>
+
+<mt:setvarblock name="system_msg">
+    <mt:if name="deleted">
+        <mtapp:statusmsg
+            id="saved_deleted"
+            class="success">The selected photos were deleted.
+        </mtapp:statusmsg>
+    </mt:if>
+</mt:setvarblock>
+
+<mt:setvarblock name="related_content">
+    <mtapp:widget
+        id="quickfilters"
+        label="Your Albums">
+      <mtapp:ListFilters>
+    </mtapp:widget>
+    <mtapp:PageActions from="manage.photos">
+</mt:setvarblock>
+
+<mt:setvarblock name="html_body_footer">
+   <mt:include name="include/display_options.tmpl">
+</mt:setvarblock>
+
+<mt:include name="include/header.tmpl">
+
+<div class="listing-filter">
+  <div class="listing-filter-inner inner pkg"></div>
+</div>
+
+<mtapp:listing type="photo" 
+    default="No photos have been uploaded." 
+    empty_message="No photos have been uploaded.">
+    <mt:if name="__first__">
+      <thead>
+      </thead>
+      <tbody>
+    <tr>
+      <td>
+    </mt:if>
+
+<div class="photo" id="photo-<mt:var name="photo_id">"
+   onclick="selectPhoto(<mt:var name="photo_id">); return false;">
+
+  <input type="checkbox" name="id" value="<mt:var name="photo_id">" 
+      id="photo-cb-<mt:var name="photo_id">" class="select hidden" />
+
+  <div class="photo-inner" style="background-image: url(<mt:var name="thumb_url">)"></div>
+  <h3>
+<mt:if name="entry_id">
+    <a href="<mt:var name="script_url">?__mode=view&_type=entry&id=<mt:var name="entry_id">&blog_id=<mt:var name="blog_id">">
+      <mt:var name="title">
+    </a>
+<mt:else>
+    <a href="javascript:void(0)" onclick="editPhoto(<mt:var name="photo_id">, <mt:var name="blog_id">); return false;">
+      <mt:var name="title">
+    </a>
+</mt:if>
+  </h3>
+</div>
+
+<mt:ignore>
+<a href="<mt:var name="photo">"><img src="<mt:var name="thumb_url">" height="<mt:var name="thumb_h">" width="<mt:var name="thumb_w">" /></a>
+</mt:ignore>
+
+    <mt:if name="__last__">
+      </td>
+    </tr>
+      </tbody>
+    </mt:if>
+</mtapp:listing>
+
+<mt:include name="include/footer.tmpl">

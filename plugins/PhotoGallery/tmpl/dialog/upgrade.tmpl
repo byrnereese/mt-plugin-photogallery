@@ -1,0 +1,22 @@
+<mt:setvarblock name="page_title"><__trans phrase="Upgrade Old Entries"></mt:setvarblock>
+<mt:setvarblock name="html_head" append="1">
+    <link rel="stylesheet" href="<mt:StaticWebPath>plugins/PhotoGallery/app/styles.css" type="text/css" />
+</mt:setvarblock>
+<mt:include name="dialog/header.tmpl">
+
+<div class="upgrade_results"><mt:getvar name="results"></div>
+
+<form method="post" action="<mt:var name="script_url">" id="upload-form">
+    <div class="actions-bar">
+        <div class="actions-bar-inner pkg actions">
+            <button
+                onclick="closeDialog(); return false"
+                type="submit"
+                accesskey="x"
+                title="<__trans phrase="Done (x)">"
+                ><__trans phrase="Done"></button>
+        </div>
+    </div>
+</form>
+
+<mt:include name="dialog/footer.tmpl">

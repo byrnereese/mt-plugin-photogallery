@@ -1,0 +1,101 @@
+<mt:setvarblock name="page_title"><__trans phrase="Add Photo to Gallery"></mt:setvarblock>
+
+<mt:setvarblock name="html_head" append="1">
+
+<mt:if name="finish">
+<script type="text/javascript">
+<!--
+function init() {
+  closeDialog();
+  var w = window;
+  while (w.parent && (w.parent != w)) w = w.parent;
+  if (w.onUploadDialogClose) {
+    w.onUploadDialogClose();
+  }
+}
+TC.attachLoadEvent( init );
+//-->
+</script>
+</mt:if>
+
+<script type="text/javascript">
+<!--
+var hiddenState = 0;
+function onSelectAlbum() {
+  var select = TC.elementOrId('album');
+  var album  = TC.elementOrId('new-album-field');
+  if (select.value == "__new") {
+        TC.removeClassName(album, "hidden");
+  } else {
+        TC.addClassName(album, "hidden");
+  }
+}
+//-->
+</script>
+
+</mt:setvarblock>
+
+<mt:include name="dialog/header.tmpl">
+
+<mt:else>
+<form method="post" enctype="multipart/form-data" action="<mt:var name="script_url">" id="upload-form">
+    <input type="hidden" name="__mode" value="PhotoGallery.upload_photo" />
+    <input type="hidden" name="blog_id" value="<mt:var name="blog_id">" />
+    <input type="hidden" name="magic_token" value="<mt:var name="magic_token">" />
+
+    <mtapp:setting
+        id="category"
+        label_class="top-label"
+        label="<__trans phrase="Select an Album">"
+        hint=""
+        show_hint="0">
+        <select name="category_id" onchange="onSelectAlbum()" id="album">
+          <option value="">Select...</option>
+<TMPL_LOOP NAME=CATEGORY_LOOP>
+<mt:if name="category_label" ne="Favorites">
+          <option value="<TMPL_VAR NAME=CATEGORY_ID>"<TMPL_IF NAME="CATEGORY_SELECTED"> selected</TMPL_IF>><TMPL_VAR NAME=CATEGORY_LABEL></option>
+</mt:if>
+</TMPL_LOOP>
+          <option value="__new">New Album</option>
+        </select>
+    </mtapp:setting>
+
+    <mtapp:setting
+        id="new-album"
+        label_class="top-label"
+        label="<__trans phrase="Album Name:">"
+        class="hidden"
+        show_hint="0">
+        <input type="text" name="new_album_name" size="30" />
+    </mtapp:setting>
+
+    <mtapp:setting
+        id="file"
+        label_class="top-label"
+        label="<__trans phrase="Select File to Upload">"
+        hint=""
+        show_hint="0">
+        <input type="file" name="file" />
+    </mtapp:setting>
+
+    <div class="actions-bar">
+        <div class="actions-bar-inner pkg actions">
+            <button
+                type="submit"
+                accesskey="s"
+                title="<__trans phrase="Upload (s)">"
+                class="primary-button"
+                ><__trans phrase="Upload Photo"></button>
+            <button
+                onclick="closeDialog(); return false"
+                type="submit"
+                accesskey="x"
+                title="<__trans phrase="Cancel (x)">"
+                ><__trans phrase="Cancel"></button>
+        </div>
+    </div>
+
+</form>
+</mt:if>
+
+<mt:include name="dialog/footer.tmpl">

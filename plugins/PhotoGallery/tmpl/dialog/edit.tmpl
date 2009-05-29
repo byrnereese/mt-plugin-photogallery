@@ -1,0 +1,29 @@
+<mt:setvarblock name="page_title"><__trans phrase="Edit Photo"></mt:setvarblock>
+<mt:include name="dialog/header.tmpl">
+
+<form method="post" action="<mt:var name="script_url">" id="upload-form">
+    <input type="hidden" name="__mode" value="PhotoGallery.save_photo" />
+    <input type="hidden" name="blog_id" value="<mt:var name="blog_id">" />
+    <input type="hidden" name="magic_token" value="<mt:var name="magic_token">" />
+
+    <div class="actions-bar">
+        <div class="actions-bar-inner pkg actions">
+            <button
+                type="submit"
+                accesskey="s"
+                title="<__trans phrase="Upload (s)">"
+                class="primary-button"
+                ><__trans phrase="Upload Another"></button>
+            <button
+                onclick="closeDialog(); return false"
+                type="submit"
+                accesskey="x"
+                title="<__trans phrase="Finish (x)">"
+                ><__trans phrase="Finish"></button>
+        </div>
+    </div>
+
+</form>
+</mt:if>
+
+<mt:include name="dialog/footer.tmpl">

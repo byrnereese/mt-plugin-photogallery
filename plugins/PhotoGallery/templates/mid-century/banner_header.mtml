@@ -1,0 +1,40 @@
+<div id="header">
+    <div id="header-inner">
+        <div id="header-content">
+<mt:ignore><!-- Use h1 and h2 html tags on the main index of the blog as the title, use divs on all other pages where there are page titles. --></mt:ignore>
+<MTIf name="main_index">
+            <h1 id="header-name"><a href="<$MTBlogURL$>" accesskey="1"><$MTBlogName encode_html="1"$></a></h1>
+            <h2 id="header-description"><$MTBlogDescription$></h2>
+<MTElse>
+            <div id="header-name"><a href="<$MTBlogURL$>" accesskey="1"><$MTBlogName encode_html="1"$></a></div>
+            <div id="header-description"><$MTBlogDescription$></div>
+</MTIf>
+        </div>
+        <div class="search-wrapper">
+            <form method="get" action="<$mt:CGIPath$><$mt:SearchScript$>" id="search-form">
+                <input type="text" id="search" class="ti" name="search" value="<$mt:SearchString$>" />
+    <mt:If name="search_results">
+                <input type="hidden" name="IncludeBlogs" value="<$mt:SearchIncludeBlogs$>" />
+                <input type="hidden" name="limit" value="<MTSearchMaxResults>" />
+    <mt:else>
+                <input type="hidden" name="IncludeBlogs" value="<$mt:BlogID$>" />
+                <input type="hidden" name="limit" value="<MTSearchMaxResults>" />
+    </mt:if>
+                <input type="submit" accesskey="4" value="<__trans phrase="Search">" />
+            </form>
+        </div>
+        <div class="blog-feed">
+            <a href="<$mt:Link template="feed_recent"$>"><__trans phrase="Subscribe"></a>
+        </div>
+    </div>
+</div>
+<mt:Ignore>
+<div id="nav">
+    <div id="nav-inner">
+        <ul>
+            <li class="home"><a href="<$MTBlogURL$>">Home</a></li>
+            <li><a href="<$mt:Link template="archive_index"$>">Archives</a></li>
+        </ul>
+    </div>
+</div>
+</mt:Ignore>

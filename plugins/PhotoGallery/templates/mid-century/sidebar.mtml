@@ -1,0 +1,20 @@
+<div id="beta">
+    <div id="beta-inner">
+        <mt:if name="use_gallery">
+        <mt:SetVarBlock name="cache_key"><mt:EntryCategory></mt:SetVarBlock>
+        <$mt:include module="Gallery"$>
+
+<div class="widget-stream widget">
+    <div class="inner pkg">
+      <h3 class="widget-header">Browse Photostream</h3>
+      <div class="nav">
+        <MTEntryPrevious><a class="previous-photo" href="<$MTEntryPermalink$>" title="<$MTEntryTitle encode_html="1"$>">Older</a></MTEntryPrevious>
+        <MTEntryNext><a class="next-photo" href="<$MTEntryPermalink$>" title="<$MTEntryTitle encode_html="1"$>">Newer</a></MTEntryNext>
+      </div>
+    </div>
+</div>
+
+        </mt:if>
+        <$mt:include module="Albums"$>                                
+    </div><!-- end #beta-inner -->
+</div><!-- end #beta -->

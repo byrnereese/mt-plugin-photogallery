@@ -1,0 +1,19 @@
+<mt:ignore>
+This template module is responsible for outputing the associated image with the current
+photo/entry in context. You can pass in the max_size parameter to control the size of 
+the image.
+
+Example:
+<mt:getvar name="photo" max_size="90">
+
+</mt:ignore>
+<MTSetVarTemplate name="photo">
+<MTSetVarBlock name="width" trim="1"><MTEntryAssets><MTAssetProperty property="image_width"></MTEntryAssets></MTSetVarBlock>
+<MTSetVarBlock name="height" trim="1"><MTEntryAssets><MTAssetProperty property="image_height"></MTEntryAssets></MTSetVarBlock>
+<mt:if name="width" gt="$height">
+        <MTSetVarBlock name="img"><MTEntryAssets><mt:AssetThumbnailLink width="$max_size" regex_replace="/^<a[^>]*>(<img[^>]*>)<\/a>$/","$1" /></MTEntryAssets></MTSetVarBlock>
+<mt:else>
+        <MTSetVarBlock name="img"><MTEntryAssets><mt:AssetThumbnailLink height="$max_size" regex_replace="/^<a[^>]*>(<img[^>]*>)<\/a>$/","$1" /></MTEntryAssets></MTSetVarBlock>
+</mt:if>
+<mt:getvar name="img" trim="1">
+</MTSetVarTemplate>
