@@ -1,55 +1,134 @@
+.entry-photo img {
+  border: 1px solid #CCCCCC;
+  padding: 10px;
+  margin: 0 auto 15px auto;
+}
+.entry-photo.is-photo {
+  text-align: center;
+}
+.entry-photo .entry-excerpt {
+  margin-left: 220px;
+}
 .photo-listing ul {
-  margin-left: 53px;
+  margin-left: 0px !important;
   padding: 2.7px 0 2.7px 0;
+  list-style: none;
 }
 .photo-listing ul li {
   float: left;
   padding: 2.7px;
 }
-.widget-archive.widget-archive-album ul li {
+
+.main-index .photo-listing ul li {
+  margin-right: 7px;
+}
+
+.main-index .photo-listing li {
+  position: relative;
+  margin-bottom: 7px;
+}
+
+.main-index .photo-listing li .thumbnail {
+  position: relative;
+}
+
+.main-index .photo-listing li .label {
+  position: absolute;
+  bottom: 2px;
+  background: black;
+  text-align: center;
+  font-size: 10px;
+  width: 125px;
+  opacity: .8;
+  overflow: hidden;
+}
+
+.main-index .photo-listing li .label span {
+  color: white;
+  text-transform: uppercase;
+}
+
+.main-index h2 { 
+  font-size: 16px;
+}
+.main-index #featured-photo .entry-title {
+  font-size: 24px;
+} 
+.main-index #featured-photo { 
+  margin-bottom: 15px;
+}
+.main-index #featured-photo .thumbnail { 
+  float: left; 
+  margin-right: 15px;
+}
+.main-index #featured-photo .entry-summary { 
+  float: left; 
+  width: 355px; 
+}
+.main-index #featured-photo .asset-meta-two { 
+  margin-bottom: 10px;
+}
+
+/* Albums Widget */
+#categories.sidebar-item ul {
+  margin: 0px;
+}
+#categories.sidebar-item ul li {
   border-bottom: 1px solid #E7EEF3;
-  width: 160px;
   float: left;
   vertical-align: middle;
   height: 60px;
   overflow: hidden;
-  margin: 0 5px 0 0;
+  margin: 0;
+  width: 130px;
+  padding-top: 5px;
 }
-.widget-archive.widget-archive-album ul li a {
+#categories.sidebar-item ul li.odd {
+  margin-right: 18px;
+}
+#categories.sidebar-item ul li a {
   border: 0;
   display: normal;
 }
-.widget-archive.widget-archive-album ul li span {
+#categories.sidebar-item ul li span {
   display: block;
   float: left;
 }
-
-.widget-archive.widget-archive-album ul li span.photo {
+#categories.sidebar-item ul li span.photo {
   width: 50px;
 }
-.widget-archive.widget-archive-album ul li span.album-name {
+#categories.sidebar-item ul li span.album-name {
   width: 100px;
   margin-left: 8px;
 }
+
+#categories.sidebar-item ul li {
+}
+#categories.sidebar-item ul li span.album-name {
+width: 70px;
+}
+#categories.sidebar-item ul li span.photo img {
+max-width: 42px;
+max-height: 42px;
+}
+
 .photo img { border: 1px solid #ccc; padding: 2px; }
+/* End Albums Widget *****************************************************/
 
-
-
+/* Browse Gallery Widget */
 .gallery-item { display: block !important; }
+#s-gallery .sidebar-item-content { width: 300px !important; padding: 10px; position:relative; }
+#s-gallery .sidebar-item-content { padding: 10px !important; }
 
-/*  
-    root element for the scrollable.  
-    when scrolling occurs this element stays still.  
-*/ 
 div.scrollable { 
     /* required settings */ 
     position:relative; 
     overflow:hidden;          
-    width: 300px;
+    width:280px;
     height:95px; 
-    margin-top: 24px;
+    margin-top:24px;
 } 
-a.next { margin-top: 0px; margin-left: 5px; position: absolute; right: 20px; }
+a.next { margin-top: 0px; margin-left: 5px; position: absolute; right: 30px; }
 a.prev { margin-top: 0px; margin-right: 5px;  position: absolute; }
  
 /*  
@@ -92,7 +171,7 @@ a.prev, a.next, a.prevPage, a.nextPage {
 	display:block;
 	width:18px;
 	height:18px;
-	background:url(left.png) no-repeat;
+	background:url(../images/left.png) no-repeat;
 	float:left;
 	cursor:pointer;
 }
@@ -109,6 +188,7 @@ a.disabled {
 
 /* next button uses another background image */
 a.next, a.nextPage {
-	background-image:url(right.png);
+	background-image:url(../images/right.png);
         clear:right;
 }
+/* End Gallery Widget *****************************************************/

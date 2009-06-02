@@ -10,40 +10,72 @@
 <body id="<$mt:BlogTemplateSetID$>" class="mt-main-index <$MTVar name="page_layout"$>">
     <div id="container">
         <div id="container-inner">
-
-
             <$mt:include module="<__trans phrase="Banner Header">"$>
-
-
             <div id="content">
                 <div id="content-inner">
-
-
                     <div id="alpha">
                         <div id="alpha-inner">
-<MTEntries>
-                            <mt:ignore><!-- Use the Entry Summary module for each entry published on this page --></mt:ignore>
-                            <$mt:include module="<__trans phrase="Entry Summary">"$>
-</MTEntries>
+
+<mt:IfUseFeaturedPhotoOnIndex>
+<MTEntries lastn="1" tags="@featured"><MTEntryAssets lastn="1">
+<div id="featured-photo" class="pkg">
+  <h2>Featured Photo</h2>
+  <div class="thumbnail">
+    <a href="<$MTEntryPermalink$>"><img src="<$mt:AssetThumbnailURL square="1" width="200"$>" width="200" height="200" /></a>
+  </div>
+  <div class="entry-summary">
+     <h3 class="asset-name entry-title"><a href="<$mt:EntryPermalink$>" rel="bookmark"><$mt:EntryTitle$></a></h3>
+     <div class="asset-meta-two">
+       <span class="byline">
+    <mt:If tag="EntryAuthorDisplayName">
+         By <span class="vcard author"><mt:If tag="EntryAuthorID"><a href="<$mt:Var name="profile_view_url" encode_html="1"$><$mt:EntryAuthorID$>"></mt:if><$mt:EntryAuthorDisplayName$><mt:If tag="EntryAuthorID"></a></mt:if></span> on <abbr class="published" title="<$mt:EntryDate format_name="iso8601"$>"><$mt:EntryDate format="%x %X"$></abbr>
+    <mt:Else>
+         <abbr class="published" title="<$mt:EntryDate format_name="iso8601"$>"><$mt:EntryDate format="%x %X"$></abbr>
+    </mt:If>
+       </span>
+<mt:Unless name="hide_counts" eq="1">
+            <mt:IfCommentsActive><span class="separator">|</span> <a href="<$mt:EntryPermalink$>#comments"><$mt:EntryCommentCount singular="1 Comment" plural="# Comments" none="No Comments"$></a></mt:IfCommentsActive>
+            <mt:IfPingsActive><span class="separator">|</span> <a href="<$mt:EntryPermalink$>#trackbacks"><$mt:EntryTrackbackCount singular="1 TrackBack" plural="# TrackBacks" none="No TrackBacks"$></a></mt:IfPingsActive>
+</mt:Unless>
+     </div>
+     <div class="entry-excerpt"><$mt:EntryExcerpt words="100" filters="__default__"$> <a class="more" href="<$mt:EntryPermalink$>">More &raquo;</a></div>
+  </div>
+</div>
+</MTEntryAssets></MTEntries>
+</mt:IfUseFeaturedPhotoOnIndex>
+
+<mt:if tag="PhotoGalleryLayout" eq="Grid">
+<div class="photo-listing">
+  <h2>Recent Photos</h2>
+  <ul>
+<MTEntries unique="1"><MTEntryAssets lastn="1">
+    <li>
+      <div class="thumbnail">
+        <a href="<$MTEntryPermalink$>"><img src="<$mt:AssetThumbnailURL square="1" width="125"$>" width="125" height="125" /></a>
+      </div>
+      <div class="label">
+        <span><$mt:EntryCategory$></span>
+      </div>
+    </li>
+</MTEntryAssets></MTEntries>
+  </ul>
+</div>
+<mt:else tag="PhotoGalleryLayout" eq="Blog">
+<mt:Entries unique="1">
+        <$mt:Include module="Entry Summary"$>
+</mt:Entries>
+</mt:if>
+
                             <div class="content-nav">
                             <a href="<$mt:Link template="archive_index"$>"><__trans phrase="Archives"></a>
                             </div>
 
-
                         </div>
                     </div>
-
-
                     <$MTInclude module="<__trans phrase="Sidebar">"$>
-
-
                 </div>
             </div>
-
-
             <$mt:include module="<__trans phrase="Banner Footer">"$>
-
-
         </div>
     </div>
     <div id="overlay"></div>

@@ -15,6 +15,13 @@ sub plugin {
     return MT->component('PhotoGallery');
 }
 
+sub suppress_create {
+    my ($cb, $app, $html_ref) = @_;
+    return unless in_gallery && 
+	plugin()->get_config_value('suppress_create_entry','blog:'.$app->blog->id);
+    $$html_ref =~ s{<li id="create-entry" class="nav-link">.*</a></li>}{};
+}
+
 sub load_list_filters {
     if (in_gallery()) {
 	my $core = MT->component('Core');

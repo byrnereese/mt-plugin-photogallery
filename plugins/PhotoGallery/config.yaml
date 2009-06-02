@@ -1,15 +1,16 @@
 id: PhotoGallery
 name: 'Photo Gallery'
-version: 2.3
 description: 'The Photo Gallery plugin allows users to easily create photo galleries and to upload photos to them.'
 author_name: 'Byrne Reese'
 author_link: 'http://www.majordojo.com/'
+version: 2.3
 
 object_types:
   asset.photo: 'MT::Asset::ImagePhoto'
 
 callbacks: 
   MT::App::CMS::template_output.list_category: $PhotoGallery::PhotoGallery::Plugin::xfrm_categories
+  MT::App::CMS::template_source.header:  $PhotoGallery::PhotoGallery::Plugin::suppress_create
 
 applications:
   cms:
@@ -29,14 +30,29 @@ blog_config_template: '<mt:PluginConfigForm id="PhotoGallery">'
 settings:
   suppress_create_entry:
     scope: 'blog'
+  use_featured_photo:
+    scope: 'blog'
+  photo_layout:
+    scope: 'blog'
+    default: 'Grid'
 plugin_config:
   PhotoGallery:
-    fieldset1:
+    photos_fieldset:
       suppress_create_entry:
         type: 'checkbox'
         label: 'Suppress Create Entry button and menu items for this blog?'
         tag: 'IfSuppressCreateEntry?'
-
+      use_featured_photo:
+        type: checkbox
+        label: 'Use Featured Photo?'
+        hint: "For use only on Photo Galleries, this will turn on and off the featured photo on the main index."
+        tag: 'IfUseFeaturedPhotoOnIndex?'
+      photo_layout:
+        type: select
+        values: "Grid,Blog"
+        label: 'Gallery Main Index Layout'
+        hint: "For use only on Photo Galleries, this will determine the layout to use on the main index."
+        tag: 'PhotoGalleryLayout'
 template_sets:
   mid-century-photo-gallery:
     photo_gallery: 1
