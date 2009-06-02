@@ -96,17 +96,19 @@ template_sets:
           mappings:
             category:
               archive_type: 'Category'
-        individual:
-          entry:
-            label: 'Entry'
-            mappings:
-              entry_archive:
-                archive_type: 'Individual'
-          page:
-            label: 'Page'
-            mappings:
-              page_archive:
-                archive_type: 'Page'
+      individual:
+        entry:
+          label: 'Entry'
+          mappings:
+            individual:
+              archive_type: 'Individual'
+              preferred: 1
+        page:
+          label: 'Page'
+          mappings:
+            page:
+              archive_type: 'Page'
+              preferred: 1
       module:
         photo_macro:
           label: 'Photo Macro'
