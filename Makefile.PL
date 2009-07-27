@@ -6,7 +6,7 @@ use ExtUtils::MakeMaker;
 
 WriteMakefile(
     NAME            => 'Photo Gallery',
-    VERSION         => '2.4',
+    VERSION         => '2.4.2',
     DISTNAME        => 'PhotoGallery',
 );
 

@@ -3,13 +3,12 @@
 <mt:setvarblock name="html_head" append="1">
   <script type="text/javascript"><!--
     function onUploadDialogClose() {
-//      window.location.reload(true);
        window.location.href = '<mt:var name="script_url">?__mode=PhotoGallery.photos&blog_id=<mt:var name="blog_id">';
-    }
+    };
     var tableSelect;
     function init() {
         tableSelect = new TC.TableSelect("photo-listing-table");
-    }
+    };
     TC.attachLoadEvent(init);
     function selectPhoto(id) {
       var p = TC.elementOrId('photo-' + id);
@@ -21,24 +20,18 @@
         TC.removeClassName(p, "selected");
         cb.checked = false;
       }
-    }
+    };
     function editPhoto(id,blog_id) {
       openDialog(null,'PhotoGallery.edit','id='+id+'&blog_id='+blog_id); 
-      /*
-      TODO - stop event propagation
-      var e = window.parent.event;
-      e.cancelBubble = true;
-      if (e.stopPropagation) e.stopPropagation();
-      */
-    }
+    };
     function deletePhotos() {
       var params = Array();
       params['mode'] = 'PhotoGallery.delete';
       params['type'] = 'asset.photo';
       doRemoveItems(getByID('photo-listing-form'), 'photo', 'photos', 'id', new Array(), params );
-    }
-  </script>
-  <link rel="stylesheet" href="<mt:StaticWebPath>plugins/PhotoGallery/app/styles.css" type="text/css" /></head>
+    };
+  --></script>
+  <link rel="stylesheet" href="<mt:StaticWebPath>plugins/PhotoGallery/app/styles.css" type="text/css" />
 
 </mt:setvarblock>
 
