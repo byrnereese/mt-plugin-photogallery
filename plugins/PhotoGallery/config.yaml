@@ -3,10 +3,14 @@ name: 'Photo Gallery'
 description: 'The Photo Gallery plugin allows users to easily create photo galleries and to upload photos to them.'
 author_name: 'Byrne Reese'
 author_link: 'http://www.majordojo.com/'
-version: 2.4.2
+version: 2.4.3
 
 object_types:
   asset.photo: 'MT::Asset::ImagePhoto'
+
+config_types:
+  photogallery:
+    handler: $PhotoGallery::PhotoGallery::Plugin::type_galleries
 
 callbacks: 
   MT::App::CMS::template_output.list_category: $PhotoGallery::PhotoGallery::Plugin::xfrm_categories
@@ -23,7 +27,28 @@ applications:
       PhotoGallery.photos: $PhotoGallery::PhotoGallery::Plugin::mode_manage
       PhotoGallery.edit: $PhotoGallery::PhotoGallery::Plugin::mode_edit
       PhotoGallery.delete: $PhotoGallery::PhotoGallery::Plugin::mode_delete
-    menus: $PhotoGallery::PhotoGallery::Plugin::load_menus
+    menus: 
+      create:photo:
+        label: 'Upload Photo'
+        order: 100
+        dialog: 'PhotoGallery.start'
+        view: "blog"
+        permission: 'create_post'
+        condition: $PhotoGallery::PhotoGallery::Plugin::in_gallery
+      manage:photo:
+        label: "Photos"
+        mode: 'PhotoGallery.photos'
+        view: blog
+        order: 100
+        condition: $PhotoGallery::PhotoGallery::Plugin::in_gallery
+      manage:ping:
+        condition: $PhotoGallery::PhotoGallery::Plugin::unless_gallery
+      manage:asset:
+        condition: $PhotoGallery::PhotoGallery::Plugin::unless_gallery
+      manage:page:
+        condition: $PhotoGallery::PhotoGallery::Plugin::unless_gallery
+      manage:folder:
+        condition: $PhotoGallery::PhotoGallery::Plugin::unless_gallery
     list_filters: $PhotoGallery::PhotoGallery::Plugin::load_list_filters
 
 template_sets:

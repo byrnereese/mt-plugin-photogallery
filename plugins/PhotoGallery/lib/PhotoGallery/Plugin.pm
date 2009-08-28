@@ -10,9 +10,37 @@ sub in_gallery {
     my $app = MT::App->instance;
     return $app->registry('template_sets')->{$ts}->{'photo_gallery'};
 }
+sub unless_gallery {
+    return !in_gallery();
+}
+
 
 sub plugin {
     return MT->component('PhotoGallery');
+}
+
+sub type_galleries {
+    my $app = shift;
+    my ($field_id, $field, $value) = @_;
+    my $out;
+
+    my @sets;
+    my $all_sets = $app->registry('template_sets');
+    foreach my $set (keys %$all_sets) {
+	push @sets, $set if $app->registry('template_sets')->{$set}->{'photo_gallery'};
+    }
+    MT->log({ message => join(", ",@sets) });
+    my @blogs = MT->model('blog')->search_by_meta( 'template_set', \@sets);
+    if ($#blogs < 0) {
+	return '<p>There is no blog in your system that utilizes a photo gallery template set.</p>';
+    }
+    $out .= "      <select name=\"$field_id\">\n";
+    $out .= "        <option value=\"0\" ".(0 == $value ? " selected" : "") .">None Selected</option>\n";
+    foreach (@blogs) {
+	$out .= "        <option value=\"".$_->id."\" ".($value == $_->id ? " selected" : "") .">".$_->name."</option>\n";
+    }
+    $out .= "      </select>\n";
+    return $out;
 }
 
 sub suppress_create {
