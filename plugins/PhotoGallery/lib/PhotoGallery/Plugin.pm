@@ -94,8 +94,6 @@ sub load_menus {
 	my $menus = $core->{registry}->{applications}->{cms}->{menus};
 	delete $menus->{'manage:asset'};
 	delete $menus->{'manage:ping'};
-	delete $menus->{'manage:page'};
-	delete $menus->{'manage:folder'};
 	foreach my $key (keys %$menus) {
 	    if ($key =~ /^create:/) {
 		my $blog = (MT->instance->blog ? MT->instance->blog : undef);
