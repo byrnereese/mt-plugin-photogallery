@@ -29,7 +29,6 @@ sub type_galleries {
     foreach my $set (keys %$all_sets) {
 	push @sets, $set if $app->registry('template_sets')->{$set}->{'photo_gallery'};
     }
-    MT->log({ message => join(", ",@sets) });
     my @blogs = MT->model('blog')->search_by_meta( 'template_set', \@sets);
     if ($#blogs < 0) {
 	return '<p>There is no blog in your system that utilizes a photo gallery template set.</p>';
