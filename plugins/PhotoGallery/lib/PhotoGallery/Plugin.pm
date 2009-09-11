@@ -21,7 +21,7 @@ sub plugin {
 
 sub type_galleries {
     my $app = shift;
-    my ($field_id, $field, $value) = @_;
+    my ($ctx, $field_id, $field, $value) = @_;
     my $out;
 
     my @sets;
