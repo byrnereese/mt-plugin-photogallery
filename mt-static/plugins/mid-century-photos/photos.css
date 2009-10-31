@@ -189,7 +189,7 @@ a.prev, a.next, a.prevPage, a.nextPage {
 	display:block;
 	width:18px;
 	height:18px;
-	background:url(../images/left.png) no-repeat;
+	background:url(left.png) no-repeat;
 	float:left;
 	cursor:pointer;
 }
@@ -206,7 +206,7 @@ a.disabled {
 
 /* next button uses another background image */
 a.next, a.nextPage {
-	background-image:url(../images/right.png);
+	background-image:url(right.png);
         clear:right;
 }
 /* End Gallery Widget *****************************************************/
