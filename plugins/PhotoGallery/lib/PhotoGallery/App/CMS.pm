@@ -30,9 +30,6 @@ sub update_timestamps {
     my $app  = shift;
     my $q    = $app->{query};
     my $blog = $app->blog;
-    require MT::Entry;
-    require MT::Asset;
-    require MT::Asset::ImagePhoto;
     my $text;
     eval 'require Image::ExifTool';
 
@@ -40,14 +37,13 @@ sub update_timestamps {
         $text .= "Could not load Image::ExifTool";
     }
     else {
-        my $iter = MT::Entry->load_iter( { blog_id => $blog->id } );
+        my $iter = MT->model('entry')->load_iter( { blog_id => $blog->id } );
         while ( my $e = $iter->next ) {
-            require MT::ObjectAsset;
             my $clause = '= asset_id';
-            my @assets = MT::Asset->load(
+            my @assets = MT->model('asset')->load(
                 { class => '*' },
                 {
-                    join => MT::ObjectAsset->join_on(
+                    join => MT->model('objectasset')->join_on(
                         undef,
                         {
                             asset_id  => \$clause,
@@ -87,10 +83,9 @@ sub upgrade {
     my $blog = $app->blog;
     my $text = '';
 
-    require MT::Entry;
     require MT::Asset::ImagePhoto;
     require File::MimeInfo;
-    my @entries = MT::Entry->load( { blog_id => $blog->id } );
+    my @entries = MT->model('entry')->load( { blog_id => $blog->id } );
     foreach my $e (@entries) {
         $text .= "Processing " . $e->title . "<br />";
         my ( $alt, $src ) =
@@ -112,7 +107,7 @@ sub upgrade {
         $text .= "    filename: $alt<br>";
         $text .= "    mime: $mime<br>";
 
-        my $a = MT::Asset::ImagePhoto->new;
+        my $a = MT->model('asset.photo')->new;
         $a->blog_id( $e->blog_id );
         $a->label( $e->title );
         $a->created_on( $e->created_on );
@@ -149,8 +144,7 @@ sub start_upload {
     my $q    = $app->{query};
     my $blog = $app->blog;
     my $tmpl = $app->load_tmpl('dialog/start.tmpl');
-    require MT::Category;
-    my $iter = MT::Category->load_iter( { blog_id => $blog->id } );
+    my $iter = MT->model('category')->load_iter( { blog_id => $blog->id } );
     my @category_loop;
     while ( my $cat = $iter->() ) {
         push @category_loop,
@@ -174,11 +168,9 @@ sub save_photo {
 
     my $q = $app->{query};
 
-    require MT::Asset::ImagePhoto;
-    my $asset = MT::Asset::ImagePhoto->load( $q->param('asset_id') );
+    my $asset = MT->model('asset.photo')->load( $q->param('asset_id') );
 
-    require MT::Entry;
-    my $entry = MT::Entry->load( $q->param('entry_id') );
+    my $entry = MT->model('entry')->load( $q->param('entry_id') );
     $entry->title( $q->param('label') );
     $entry->text( $q->param('caption') );
     $entry->allow_comments( $q->param('allow_comments') eq "1" ? 1 : 0 );
@@ -237,16 +229,15 @@ sub upload_photo {
 
     my $cat;
     my $cat_id = $q->param('category_id');
-    require MT::Category;
     if ( $cat_id eq "__new" ) {
         my $cat_name = $q->param('new_album_name') || 'Untitled';
-        $cat = MT::Category->new;
+        $cat = MT->model('category')->new;
         $cat->label($cat_name);
         $cat->blog_id( $app->blog->id );
         $cat->save;
     }
     else {
-        $cat = MT::Category->load( $cat_id, { cached_ok => 1 } );
+        $cat = MT->model('category')->load( $cat_id, { cached_ok => 1 } );
     }
     $q->param( 'extra_path_site', dirify( $cat->label ) ) if $cat;
 
@@ -496,8 +487,7 @@ sub upload_photo {
         eval { require MT::Image; MT::Image->new or die; };
     }
 
-    require MT::Asset::ImagePhoto;
-    my $asset = MT::Asset::ImagePhoto->new();
+    my $asset = MT->model('asset.photo')->new();
     $asset->label($local_basename);
     $asset->file_path($asset_file);
     $asset->file_name($local_basename);
@@ -551,10 +541,9 @@ sub upload_photo {
         blog       => $blog
     );
 
-    require MT::Entry;
-    my $entry = MT::Entry->new;
+    my $entry = MT->model('entry')->new;
     $entry->blog_id( $app->blog->id );
-    $entry->status( MT::Entry::RELEASE() );
+    $entry->status( MT->model('entry')::RELEASE() );
     $entry->author_id( $app->{author}->id );
     $entry->title( $asset->file_name );
     $entry->category_id( $cat->id );
@@ -581,12 +570,11 @@ sub upload_photo {
     ## ID. So we can now add/update/remove the primary placement.
     $app->delete_param('category_id');
 
-    require MT::Placement;
     my $place =
-      MT::Placement->load( { entry_id => $entry->id, is_primary => 1 } );
+      MT->model('placement')->load( { entry_id => $entry->id, is_primary => 1 } );
     if ( $cat->id ) {
         unless ($place) {
-            $place = MT::Placement->new;
+            $place = MT->model('placement')->new;
             $place->entry_id( $entry->id );
             $place->blog_id( $entry->blog_id );
             $place->is_primary(1);
@@ -601,7 +589,7 @@ sub upload_photo {
     }
 
     # save secondary placements...
-    my @place = MT::Placement->load(
+    my @place = MT->model('placement')->load(
         {
             entry_id   => $entry->id,
             is_primary => 0
