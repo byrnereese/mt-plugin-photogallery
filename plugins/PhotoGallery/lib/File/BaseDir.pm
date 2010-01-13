@@ -7,117 +7,125 @@ require Exporter;
 
 our $VERSION = 0.03;
 
-our @ISA = qw(Exporter);
+our @ISA         = qw(Exporter);
 our %EXPORT_TAGS = (
-	vars => [ qw(
-		xdg_data_home xdg_data_dirs
-		xdg_config_home xdg_config_dirs
-		xdg_cache_home
-	) ],
-	lookup => [ qw(
-		data_home data_dirs data_files
-		config_home config_dirs config_files
-		cache_home
-	) ],
+    vars => [
+        qw(
+          xdg_data_home xdg_data_dirs
+          xdg_config_home xdg_config_dirs
+          xdg_cache_home
+          )
+    ],
+    lookup => [
+        qw(
+          data_home data_dirs data_files
+          config_home config_dirs config_files
+          cache_home
+          )
+    ],
 );
-our @EXPORT_OK = (
-	qw(xdg_data_files xdg_config_files),
-	map @$_, values %EXPORT_TAGS
-);
+our @EXPORT_OK =
+  ( qw(xdg_data_files xdg_config_files), map @$_, values %EXPORT_TAGS );
 
 # Set root and home directories
 my $rootdir = File::Spec->rootdir();
-if ($^O eq 'MSWin32') {
-	$rootdir = 'C:\\'; # File::Spec default depends on CWD
-	$ENV{HOME} ||= $ENV{USERPROFILE} || $ENV{HOMEDRIVE}.$ENV{HOMEPATH};
-		# logic from File::HomeDir::Windows
+if ( $^O eq 'MSWin32' ) {
+    $rootdir = 'C:\\';    # File::Spec default depends on CWD
+    $ENV{HOME} ||= $ENV{USERPROFILE} || $ENV{HOMEDRIVE} . $ENV{HOMEPATH};
+
+    # logic from File::HomeDir::Windows
 }
 my $home = $ENV{HOME};
 unless ($home) {
-	warn "WARNING: HOME is not set, using root: $rootdir\n";
-	$home = $rootdir;
+    warn "WARNING: HOME is not set, using root: $rootdir\n";
+    $home = $rootdir;
 }
 
 # Set defaults
-our $xdg_data_home = File::Spec->catdir($home, qw/.local share/);
+our $xdg_data_home = File::Spec->catdir( $home, qw/.local share/ );
 our @xdg_data_dirs = (
-	File::Spec->catdir($rootdir, qw/usr local share/),
-	File::Spec->catdir($rootdir, qw/usr share/),
+    File::Spec->catdir( $rootdir, qw/usr local share/ ),
+    File::Spec->catdir( $rootdir, qw/usr share/ ),
 );
-our $xdg_config_home = File::Spec->catdir($home, '.config');
-our @xdg_config_dirs = ( File::Spec->catdir($rootdir, qw/etc xdg/) );
-our $xdg_cache_home = File::Spec->catdir($home, '.cache');
+our $xdg_config_home = File::Spec->catdir( $home, '.config' );
+our @xdg_config_dirs = ( File::Spec->catdir( $rootdir, qw/etc xdg/ ) );
+our $xdg_cache_home = File::Spec->catdir( $home, '.cache' );
 
 # OO method
-sub new { bless \$VERSION, shift } # what else is there to bless ?
+sub new { bless \$VERSION, shift }    # what else is there to bless ?
 
 # Variable methods
 sub xdg_data_home { $ENV{XDG_DATA_HOME} || $xdg_data_home }
 
 sub xdg_data_dirs {
-	( $ENV{XDG_DATA_DIRS}
-		? _adapt($ENV{XDG_DATA_DIRS})
-		: @xdg_data_dirs
-	)
+    (
+        $ENV{XDG_DATA_DIRS}
+        ? _adapt( $ENV{XDG_DATA_DIRS} )
+        : @xdg_data_dirs
+    );
 }
 
-sub xdg_config_home {$ENV{XDG_CONFIG_HOME} || $xdg_config_home }
+sub xdg_config_home { $ENV{XDG_CONFIG_HOME} || $xdg_config_home }
 
 sub xdg_config_dirs {
-	( $ENV{XDG_CONFIG_DIRS}
-		? _adapt($ENV{XDG_CONFIG_DIRS})
-		: @xdg_config_dirs
-	)
+    (
+        $ENV{XDG_CONFIG_DIRS}
+        ? _adapt( $ENV{XDG_CONFIG_DIRS} )
+        : @xdg_config_dirs
+    );
 }
 
 sub xdg_cache_home { $ENV{XDG_CACHE_HOME} || $xdg_cache_home }
 
 sub _adapt {
-	map { File::Spec->catdir( split('/', $_) ) } split /[:;]/, shift;
-		# ':' defined in the spec, but ';' is standard on win32
+    map { File::Spec->catdir( split( '/', $_ ) ) } split /[:;]/, shift;
+
+    # ':' defined in the spec, but ';' is standard on win32
 }
 
 # Lookup methods
-sub data_home { _catfile(xdg_data_home, @_) }
+sub data_home { _catfile( xdg_data_home, @_ ) }
 
-sub data_dirs { _find_files(\&_dir, \@_, xdg_data_home, xdg_data_dirs) }
+sub data_dirs { _find_files( \&_dir, \@_, xdg_data_home, xdg_data_dirs ) }
 
-sub data_files { _find_files(\&_file, \@_, xdg_data_home, xdg_data_dirs) }
+sub data_files { _find_files( \&_file, \@_, xdg_data_home, xdg_data_dirs ) }
 
 sub xdg_data_files { my @dirs = data_files(@_); return @dirs }
 
-sub config_home { _catfile(xdg_config_home, @_) }
+sub config_home { _catfile( xdg_config_home, @_ ) }
 
-sub config_dirs { _find_files(\&_dir, \@_, xdg_config_home, xdg_config_dirs) }
+sub config_dirs { _find_files( \&_dir, \@_, xdg_config_home, xdg_config_dirs ) }
 
-sub config_files { _find_files(\&_file, \@_, xdg_config_home, xdg_config_dirs) }
+sub config_files {
+    _find_files( \&_file, \@_, xdg_config_home, xdg_config_dirs );
+}
 
 sub xdg_config_files { my @dirs = config_files(@_); return @dirs }
 
-sub cache_home { _catfile(xdg_cache_home, @_) }
+sub cache_home { _catfile( xdg_cache_home, @_ ) }
 
 sub _catfile {
-	my $dir = shift;
-	shift if ref $_[0] or $_[0] =~ /::/; # OO call
-	return File::Spec->catfile($dir, @_);
+    my $dir = shift;
+    shift if ref $_[0] or $_[0] =~ /::/;    # OO call
+    return File::Spec->catfile( $dir, @_ );
 }
 
 sub _find_files {
-	my $type = shift;
-	my $file = shift;
-	shift @$file if ref $$file[0] or $$file[0] =~ /::/; # OO call
-	#warn "Looking for: @$file\n         in: @_\n";
-	if (wantarray) {
-		return grep { &$type( $_ ) && -r $_ }
-		       map  { File::Spec->catfile($_, @$file) } @_;
-	}
-	else { # prevent unnessecary stats by returning early
-		for (@_) {
-			my $path = File::Spec->catfile($_, @$file);
-			return $path if &$type($path) && -r $path;
-		}
-	}
-	return ();
+    my $type = shift;
+    my $file = shift;
+    shift @$file if ref $$file[0] or $$file[0] =~ /::/;    # OO call
+           #warn "Looking for: @$file\n         in: @_\n";
+    if (wantarray) {
+        return grep { &$type($_) && -r $_ }
+          map { File::Spec->catfile( $_, @$file ) } @_;
+    }
+    else {    # prevent unnessecary stats by returning early
+        for (@_) {
+            my $path = File::Spec->catfile( $_, @$file );
+            return $path if &$type($path) && -r $path;
+        }
+    }
+    return ();
 }
 
 sub _dir { -d $_[0] }
