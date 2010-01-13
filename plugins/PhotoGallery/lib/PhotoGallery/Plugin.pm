@@ -289,6 +289,7 @@ sub load_asset_from_entry {
     my ($obj) = @_;
     require MT::ObjectAsset;
     require MT::Asset;
+    my $join = '= asset_id';
     my $asset = MT::Asset->load(
         { class => '*' },
         {
@@ -296,7 +297,7 @@ sub load_asset_from_entry {
             join  => MT::ObjectAsset->join_on(
                 undef,
                 {
-                    asset_id  => \'= asset_id',
+                    asset_id  => \$join,
                     object_ds => 'entry',
                     object_id => $obj->id
                 }
