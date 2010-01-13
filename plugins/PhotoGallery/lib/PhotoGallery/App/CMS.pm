@@ -129,7 +129,7 @@ sub upgrade {
         $e->text_more( $a->as_html );
         $e->allow_comments( $q->param('allow_comments') );
 
-        #	$e->save or die $e->errstr;
+        $e->save or die $e->errstr;
 
     }
 
@@ -564,6 +564,17 @@ sub upload_photo {
     }
 
     $entry->save or die $entry->errstr;
+    if (MT->version_number >= 4.3) {
+        # this must be done because MT 4.3 no longer processes a form tag to associate
+        # assets to posts
+        my $map = MT->model('objectasset')->new;
+        $map->blog_id($entry->blog_id);
+        $map->asset_id($asset->id);
+        $map->object_ds('entry');
+        $map->object_id($entry->id);
+        $map->save;
+    }
+
     if ( $q->param('is_favorite') ) { $entry->add_tags( ['@favorite'] ); }
 
     ## Now that the object is saved, we can be certain that it has an
