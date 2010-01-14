@@ -543,7 +543,7 @@ sub upload_photo {
 
     my $entry = MT->model('entry')->new;
     $entry->blog_id( $app->blog->id );
-    $entry->status( MT->model('entry')::RELEASE() );
+    $entry->status( MT->model('entry')->RELEASE() );
     $entry->author_id( $app->{author}->id );
     $entry->title( $asset->file_name );
     $entry->category_id( $cat->id );
