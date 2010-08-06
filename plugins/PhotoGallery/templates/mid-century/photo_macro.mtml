@@ -11,9 +11,17 @@ Example:
 <MTSetVarBlock name="width" trim="1"><MTEntryAssets><MTAssetProperty property="image_width"></MTEntryAssets></MTSetVarBlock>
 <MTSetVarBlock name="height" trim="1"><MTEntryAssets><MTAssetProperty property="image_height"></MTEntryAssets></MTSetVarBlock>
 <mt:if name="width" gt="$height">
-        <MTSetVarBlock name="img"><MTEntryAssets><mt:AssetThumbnailLink width="$max_size" regex_replace="/^<a[^>]*>(<img[^>]*>)<\/a>$/","$1" /></MTEntryAssets></MTSetVarBlock>
+  <mt:if name="width" gt="$max_size">
+    <MTSetVarBlock name="img"><MTEntryAssets><mt:AssetThumbnailLink width="$max_size" regex_replace="/^<a[^>]*>(<img[^>]*>)<\/a>$/","$1" /></MTEntryAssets></MTSetVarBlock>
+  <mt:else>
+    <MTSetVarBlock name="img"><MTEntryAssets><mt:AssetThumbnailLink width="$width" regex_replace="/^<a[^>]*>(<img[^>]*>)<\/a>$/","$1" /></MTEntryAssets></MTSetVarBlock>
+  </mt:if>
 <mt:else>
-        <MTSetVarBlock name="img"><MTEntryAssets><mt:AssetThumbnailLink height="$max_size" regex_replace="/^<a[^>]*>(<img[^>]*>)<\/a>$/","$1" /></MTEntryAssets></MTSetVarBlock>
+  <mt:if name="height" gt="$max_size">
+    <MTSetVarBlock name="img"><MTEntryAssets><mt:AssetThumbnailLink height="$max_size" regex_replace="/^<a[^>]*>(<img[^>]*>)<\/a>$/","$1" /></MTEntryAssets></MTSetVarBlock>
+  <mt:else>
+    <MTSetVarBlock name="img"><MTEntryAssets><mt:AssetThumbnailLink height="$height" regex_replace="/^<a[^>]*>(<img[^>]*>)<\/a>$/","$1" /></MTEntryAssets></MTSetVarBlock>
+  </mt:if>
 </mt:if>
 <mt:getvar name="img" trim="1">
 </MTSetVarTemplate>
