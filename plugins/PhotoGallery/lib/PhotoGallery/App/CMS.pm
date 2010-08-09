@@ -175,7 +175,7 @@ sub save_photo {
     $entry->text( $q->param('caption') );
     $entry->allow_comments( $q->param('allow_comments') eq "1" ? 1 : 0 );
     $entry->allow_pings(0);
-    $entry->basename( dirify( $entry->title ) );
+    $entry->basename( MT::Util::make_unique_basename($entry) );
     $entry->add_tags( $q->param('tags') );
 
     my $author = $app->user;
@@ -201,6 +201,25 @@ sub save_photo {
     $app->rebuild_entry( Entry => $entry, BuildDependencies => 1 );
 
     start_upload($app);
+}
+
+sub _make_unique_basename {
+    my ($fn) = @_;
+    $fn = '' if !defined $fn;
+    $fn =~ s/^\s+|\s+$//gs;
+    if ($fn eq '') {
+        $fn = 'photo';
+    }
+    my $base = $fn;
+    $base =~ s/_+$//;
+    my $i = 1;
+    my $base_copy = $base;
+    my $class = ref $entry; 
+    while ($class->exist({ blog_id => $blog->id,
+                           basename => $base })) {
+        $base = $base_copy . '_' . $i++;
+    }
+    $base;
 }
 
 sub upload_photo {
@@ -258,74 +277,87 @@ sub upload_photo {
         }
         $no_upload = !$fh;
     }
+
     my $has_overwrite = $q->param('overwrite_yes') || $q->param('overwrite_no');
-    return $app->error(
-        $app->translate("You did not choose a file to upload.") )
-      if $no_upload && !$has_overwrite;
-    my $basename = $q->param('file') || $q->param('fname');
-    $basename =~ s!\\!/!g;    ## Change backslashes to forward slashes
-    $basename =~ s!^.*/!!;    ## Get rid of full directory paths
-    if ( $basename =~ m!\.\.|\0|\|! ) {
-        return $app->error(
-            $app->translate( "Invalid filename '[_1]'", $basename ) );
-    }
+    return $app->error( $app->translate("You did not choose a file to upload.") )
+        if $no_upload && !$has_overwrite;
+
+    my ( $root_path, $relative_path, $relative_url, $base_url, $asset_base_url,
+         $asset_file, $mimetype, $local_file );
+
     my $blog_id = $q->param('blog_id');
     my $blog    = $app->blog;
     my $fmgr    = $blog->file_mgr;
 
-    ## Set up the full path to the local file; this path could start
-    ## at either the Local Site Path or Local Archive Path, and could
-    ## include an extra directory or two in the middle.
-    my ( $root_path, $relative_path, $relative_url, $base_url, $asset_base_url,
-        $asset_file, $mimetype, $local_file );
-
-    $root_path = $blog->site_path;
-    $relative_path = archive_file_for( undef, $blog, 'Category', $cat );
-    $relative_path =~ s/\/[a-z\.]*$//;
-
-    my $relative_path_save = $relative_path;
-    my $path               = $root_path;
-    if ($relative_path) {
-        if ( $relative_path =~ m!\.\.|\0|\|! ) {
+    # Determine filename of uploaded file. Automatically increment basename if previous
+    # one exists.
+    my $i = 0;
+    do {
+        my $basename = $q->param('file') || $q->param('fname');
+        if ($i > 0) {
+            $basename .= "_" . $i;
+        }
+        $i++;
+        $basename =~ s!\\!/!g;    ## Change backslashes to forward slashes
+        $basename =~ s!^.*/!!;    ## Get rid of full directory paths
+        if ( $basename =~ m!\.\.|\0|\|! ) {
             return $app->error(
-                $app->translate( "Invalid extra path '[_1]'", $relative_path )
-            );
+                $app->translate( "Invalid filename '[_1]'", $basename ) );
         }
-        $path = File::Spec->catdir( $path, $relative_path );
-        ## Untaint. We already checked for security holes in $relative_path.
-        ($path) = $path =~ /(.+)/s;
-        ## Build out the directory structure if it doesn't exist. DirUmask
-        ## determines the permissions of the new directories.
-        unless ( $fmgr->exists($path) ) {
-            $fmgr->mkpath($path)
-              or return $app->error(
-                $app->translate(
-                    "Can't make path '[_1]': [_2]",
-                    $path, $fmgr->errstr
-                )
-              );
+        
+        ## Set up the full path to the local file; this path could start
+        ## at either the Local Site Path or Local Archive Path, and could
+        ## include an extra directory or two in the middle.
+        
+        $root_path = $blog->site_path;
+        $relative_path = archive_file_for( undef, $blog, 'Category', $cat );
+        $relative_path =~ s/\/[a-z\.]*$//;
+        
+        my $relative_path_save = $relative_path;
+        my $path               = $root_path;
+        if ($relative_path) {
+            if ( $relative_path =~ m!\.\.|\0|\|! ) {
+                return $app->error(
+                    $app->translate( "Invalid extra path '[_1]'", $relative_path )
+                    );
+            }
+            $path = File::Spec->catdir( $path, $relative_path );
+            ## Untaint. We already checked for security holes in $relative_path.
+            ($path) = $path =~ /(.+)/s;
+            ## Build out the directory structure if it doesn't exist. DirUmask
+            ## determines the permissions of the new directories.
+            unless ( $fmgr->exists($path) ) {
+                $fmgr->mkpath($path)
+                    or return $app->error(
+                        $app->translate(
+                            "Can't make path '[_1]': [_2]",
+                            $path, $fmgr->errstr
+                        )
+                    );
+            }
         }
-    }
-
-    $relative_url =
-      File::Spec->catfile( $relative_path, encode_url($basename) );
-    $relative_path =
-      $relative_path
-      ? File::Spec->catfile( $relative_path, $basename )
-      : $basename;
-    $asset_file = $q->param('site_path') ? '%r' : '%a';
-    $asset_file = File::Spec->catfile( $asset_file, $relative_path );
-    $local_file = File::Spec->catfile( $path,       $basename );
-    $base_url =
-        $app->param('site_path')
-      ? $blog->site_url
-      : $blog->archive_url;
-    $asset_base_url = $app->param('site_path') ? '%r' : '%a';
-
-    ## Untaint. We have already tested $basename and $relative_path for
-    ## security issues above, and we have to assume that we can trust the
-    ## user's Local Archive Path setting. So we should be safe.
-    ($local_file) = $local_file =~ /(.+)/s;
+        
+        $relative_url =
+            File::Spec->catfile( $relative_path, encode_url($basename) );
+        $relative_path =
+            $relative_path
+            ? File::Spec->catfile( $relative_path, $basename )
+            : $basename;
+        $asset_file = $q->param('site_path') ? '%r' : '%a';
+        $asset_file = File::Spec->catfile( $asset_file, $relative_path );
+        $local_file = File::Spec->catfile( $path,       $basename );
+        $base_url =
+            $app->param('site_path')
+            ? $blog->site_url
+            : $blog->archive_url;
+        $asset_base_url = $app->param('site_path') ? '%r' : '%a';
+        
+        ## Untaint. We have already tested $basename and $relative_path for
+        ## security issues above, and we have to assume that we can trust the
+        ## user's Local Archive Path setting. So we should be safe.
+        ($local_file) = $local_file =~ /(.+)/s;
+        
+    } while ( $fmgr->exists($local_file) );
 
     ## If $local_file already exists, we try to write the upload to a
     ## tempfile, then ask for confirmation of the upload.
