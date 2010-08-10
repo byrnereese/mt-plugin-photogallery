@@ -203,25 +203,6 @@ sub save_photo {
     start_upload($app);
 }
 
-sub _make_unique_basename {
-    my ($fn) = @_;
-    $fn = '' if !defined $fn;
-    $fn =~ s/^\s+|\s+$//gs;
-    if ($fn eq '') {
-        $fn = 'photo';
-    }
-    my $base = $fn;
-    $base =~ s/_+$//;
-    my $i = 1;
-    my $base_copy = $base;
-    my $class = ref $entry; 
-    while ($class->exist({ blog_id => $blog->id,
-                           basename => $base })) {
-        $base = $base_copy . '_' . $i++;
-    }
-    $base;
-}
-
 sub upload_photo {
     my $app    = shift;
     my $plugin = $app->instance;
