@@ -264,7 +264,7 @@ sub upload_photo {
         if $no_upload && !$has_overwrite;
 
     my ( $root_path, $relative_path, $relative_url, $base_url, $asset_base_url,
-         $asset_file, $mimetype, $local_file );
+         $asset_file, $mimetype, $local_file, $basename );
 
     my $blog_id = $q->param('blog_id');
     my $blog    = $app->blog;
@@ -274,7 +274,7 @@ sub upload_photo {
     # one exists.
     my $i = 0;
     do {
-        my $basename = $q->param('file') || $q->param('fname');
+        $basename = $q->param('file') || $q->param('fname');
         if ($i > 0) {
             $basename .= "_" . $i;
         }
