@@ -264,7 +264,7 @@ sub upload_photo {
         if $no_upload && !$has_overwrite;
 
     my ( $root_path, $relative_path, $relative_url, $base_url, $asset_base_url,
-         $asset_file, $mimetype, $local_file, $basename );
+         $asset_file, $mimetype, $local_file, $basename, $relative_path_save );
 
     my $blog_id = $q->param('blog_id');
     my $blog    = $app->blog;
@@ -294,8 +294,8 @@ sub upload_photo {
         $relative_path = archive_file_for( undef, $blog, 'Category', $cat );
         $relative_path =~ s/\/[a-z\.]*$//;
         
-        my $relative_path_save = $relative_path;
-        my $path               = $root_path;
+        $relative_path_save = $relative_path;
+        my $path            = $root_path;
         if ($relative_path) {
             if ( $relative_path =~ m!\.\.|\0|\|! ) {
                 return $app->error(
