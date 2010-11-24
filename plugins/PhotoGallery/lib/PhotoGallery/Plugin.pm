@@ -233,7 +233,7 @@ sub mode_manage {
         $row->{'caption'} = $obj->text;
 
         my $asset = load_asset_from_entry($obj);
-        if ($asset) {
+        if ($asset && $asset->isa('MT::Asset::Photo')) {
             my %arg;
             if ( $asset->image_width > $asset->image_height ) {
                 $arg{Width} = 110;
