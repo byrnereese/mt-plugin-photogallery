@@ -4,7 +4,7 @@ description: 'The Photo Gallery plugin allows users to easily create photo galle
 author_name: 'Byrne Reese'
 author_link: 'http://www.majordojo.com/'
 static_version: 1
-version: 2.5
+version: 2.5.1
 
 object_types:
   asset.photo: 'MT::Asset::ImagePhoto'
@@ -28,28 +28,7 @@ applications:
       PhotoGallery.photos: $PhotoGallery::PhotoGallery::Plugin::mode_manage
       PhotoGallery.edit: $PhotoGallery::PhotoGallery::Plugin::mode_edit
       PhotoGallery.delete: $PhotoGallery::PhotoGallery::Plugin::mode_delete
-    menus: 
-      create:photo:
-        label: 'Upload Photo'
-        order: 100
-        dialog: 'PhotoGallery.start'
-        view: "blog"
-        permission: 'create_post'
-        condition: $PhotoGallery::PhotoGallery::Plugin::in_gallery
-      manage:photo:
-        label: "Photos"
-        mode: 'PhotoGallery.photos'
-        view: blog
-        order: 100
-        condition: $PhotoGallery::PhotoGallery::Plugin::in_gallery
-      manage:ping:
-        condition: $PhotoGallery::PhotoGallery::Plugin::unless_gallery
-      manage:asset:
-        condition: $PhotoGallery::PhotoGallery::Plugin::unless_gallery
-      manage:page:
-        condition: $PhotoGallery::PhotoGallery::Plugin::unless_gallery
-      manage:folder:
-        condition: $PhotoGallery::PhotoGallery::Plugin::unless_gallery
+    menus: $PhotoGallery::PhotoGallery::Plugin::load_menus
     list_filters: $PhotoGallery::PhotoGallery::Plugin::load_list_filters
 
 template_sets:

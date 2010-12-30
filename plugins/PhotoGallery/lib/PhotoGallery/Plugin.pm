@@ -5,9 +5,9 @@ use MT::Util qw(relative_date);
 
 sub in_gallery {
     local $@;
-    return 0 if !MT->instance->blog;
-    my $ts  = MT->instance->blog->template_set;
     my $app = MT::App->instance;
+    return 0 unless $app;
+    my $ts  = $app->blog->template_set;
     return $app->registry('template_sets')->{$ts}->{'photo_gallery'};
 }
 
@@ -55,7 +55,7 @@ sub type_galleries {
 sub suppress_create {
     my ( $cb, $app, $html_ref ) = @_;
     return
-      unless in_gallery
+      unless in_gallery()
           && plugin()
           ->get_config_value( 'suppress_create_entry',
               'blog:' . $app->blog->id );
@@ -99,53 +99,47 @@ sub load_list_filters {
 }
 
 sub load_menus {
-    if ( in_gallery() ) {
-        my $sc = MT->component('StyleCatcher');
-        delete $sc->{registry}->{applications}->{cms}->{menus};
-
-        my $core  = MT->component('Core');
-        my $menus = $core->{registry}->{applications}->{cms}->{menus};
-        delete $menus->{'manage:asset'};
-        delete $menus->{'manage:ping'};
-        foreach my $key ( keys %$menus ) {
-            if ( $key =~ /^create:/ ) {
+    my $sc = MT->component('StyleCatcher');
+    delete $sc->{registry}->{applications}->{cms}->{menus};
+    my $entry_order = in_gallery() ? 2200 : 1000;
+    return {
+        'create:entry' => {
+            condition => sub { 
                 my $blog = ( MT->instance->blog ? MT->instance->blog : undef );
-                unless (
-                       $key =~ /entry/
-                    && $blog
-                    && !plugin()->get_config_value(
-                        'suppress_create_entry', 'blog:' . $blog->id
-                    )
-                  )
-                {
-                    delete $menus->{$key};
-                }
-            }
-        }
-        return {
-            'create:photo' => {
-                label      => 'Upload Photo',
-                order      => 100,
-                dialog     => 'PhotoGallery.start',
-                view       => "blog",
-                permission => 'create_post',
+                return $blog && 
+                    in_gallery() && 
+                    !plugin()->get_config_value('suppress_create_entry', 'blog:' . $blog->id )
             },
-            'manage:photo' => {
-                label => "Photos",
-                mode  => 'PhotoGallery.photos',
-                order => 100,
-            },
-            'manage:entry'    => { order => 2200, },
-            'manage:category' => {
-                label      => "Albums",
-                mode       => 'list_cat',
-                order      => 6000,
-                permission => 'edit_categories',
-                view       => "blog",
-            },
-        };
-    }
-    return {};
+        },
+        'create:photo' => {
+            label      => 'Upload Photo',
+            order      => 100,
+            dialog     => 'PhotoGallery.start',
+            view       => "blog",
+            permission => 'create_post',
+            condition  => sub { in_gallery },
+        },
+        'manage:photo' => {
+            label => "Photos",
+            mode  => 'PhotoGallery.photos',
+            order => 100,
+            condition => sub { in_gallery },
+        },
+        'manage:albums' => {
+            label      => "Albums",
+            mode       => 'list_cat',
+            order      => 6000,
+            permission => 'edit_categories',
+            view       => "blog",
+            condition => sub { in_gallery },
+        },
+        'manage:category' => { condition => sub { unless_gallery } },
+        'manage:entry'  => { order => $entry_order, },
+        'manage:ping'   => { condition => sub { unless_gallery } },
+        'manage:asset'  => { condition => sub { unless_gallery } },
+        'manage:page'   => { condition => sub { unless_gallery } },
+        'manage:folder' => { condition => sub { unless_gallery } },
+    };
 }
 
 sub xfrm_categories {
