@@ -3,7 +3,8 @@ name: 'Photo Gallery'
 description: 'The Photo Gallery plugin allows users to easily create photo galleries and to upload photos to them.'
 author_name: 'Byrne Reese'
 author_link: 'http://www.majordojo.com/'
-version: 2.4.7
+static_version: 1
+version: 2.5
 
 object_types:
   asset.photo: 'MT::Asset::ImagePhoto'
@@ -57,6 +58,12 @@ template_sets:
     label: "Mid-Century Photo Gallery"
     base_path: 'templates/mid-century'
     order: 650
+    thumbnail: theme_thumb.png
+    preview: theme_preview.png
+    author_name: Byrne Reese
+    author_link: http://www.majordojo.com/
+    paypal_email: byrne@majordojo.com
+   
     options:
       fieldsets:
         admin:

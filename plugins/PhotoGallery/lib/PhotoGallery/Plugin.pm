@@ -162,10 +162,9 @@ sub mode_delete {
     my $app = shift;
     $app->validate_magic or return;
 
-    require MT::Entry;
     my @photos = $app->param('id');
     for my $entry_id (@photos) {
-        my $e = MT::Entry->load($entry_id) or next;
+        my $e = MT->model('entry')->load($entry_id) or next;
         my $a = load_asset_from_entry($e);
         $e->remove();
         $a->remove();
@@ -186,8 +185,7 @@ sub mode_edit {
     my %param = @_;
     my $q     = $app->{query};
 
-    require MT::Entry;
-    my $obj   = MT::Entry->load( $q->param('id') );
+    my $obj   = MT->model('entry')->load( $q->param('id') );
     my $asset = load_asset_from_entry($obj);
 
     my %arg;
@@ -212,8 +210,7 @@ sub mode_edit {
     $tmpl->param( category_id    => $obj->category->id );
 
     my $tag_delim = chr( $app->user->entry_prefs->{tag_delim} );
-    require MT::Tag;
-    my $tags = MT::Tag->join( $tag_delim, $obj->tags );
+    my $tags = MT->model('tag')->join( $tag_delim, $obj->tags );
     $tmpl->param( tags => $tags );
 
     return $app->build_page($tmpl);
@@ -233,7 +230,7 @@ sub mode_manage {
         $row->{'caption'} = $obj->text;
 
         my $asset = load_asset_from_entry($obj);
-        if ($asset && $asset->isa('MT::Asset::Photo')) {
+        if ($asset && ($asset->isa('MT::Asset::Photo') || $asset->isa('MT::Asset::Image')) ) {
             my %arg;
             if ( $asset->image_width > $asset->image_height ) {
                 $arg{Width} = 110;
@@ -287,14 +284,12 @@ sub mode_manage {
 
 sub load_asset_from_entry {
     my ($obj) = @_;
-    require MT::ObjectAsset;
-    require MT::Asset;
     my $join = '= asset_id';
-    my $asset = MT::Asset->load(
+    my $asset = MT->model('asset')->load(
         { class => '*' },
         {
             lastn => 1,
-            join  => MT::ObjectAsset->join_on(
+            join  => MT->model('objectasset')->join_on(
                 undef,
                 {
                     asset_id  => \$join,
