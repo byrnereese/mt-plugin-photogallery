@@ -7,6 +7,7 @@ sub in_gallery {
     local $@;
     my $app = MT::App->instance;
     return 0 unless $app;
+    return 0 unless $app->blog;
     my $ts  = $app->blog->template_set;
     return $app->registry('template_sets')->{$ts}->{'photo_gallery'};
 }

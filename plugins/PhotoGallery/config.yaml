@@ -4,7 +4,7 @@ description: 'The Photo Gallery plugin allows users to easily create photo galle
 author_name: 'Byrne Reese'
 author_link: 'http://www.majordojo.com/'
 static_version: 1
-version: 2.5.1
+version: 2.5.2
 
 object_types:
   asset.photo: 'MT::Asset::ImagePhoto'
