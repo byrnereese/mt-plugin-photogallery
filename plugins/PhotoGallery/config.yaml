@@ -4,7 +4,7 @@ description: 'The Photo Gallery plugin allows users to easily create photo galle
 author_name: 'Byrne Reese'
 author_link: 'http://www.majordojo.com/'
 static_version: 1
-version: 2.5.2
+version: 2.6
 
 object_types:
   asset.photo: 'MT::Asset::ImagePhoto'
@@ -31,6 +31,13 @@ applications:
     menus: $PhotoGallery::PhotoGallery::Plugin::load_menus
     list_filters: $PhotoGallery::PhotoGallery::Plugin::load_list_filters
 
+options:
+  suppress_create_entry:
+    type: 'checkbox'
+    label: 'Suppress Create Entry button and menu items for this blog?'
+    tag: 'IfSuppressCreateEntry?'
+    scope: blog
+
 template_sets:
   mid-century-photo-gallery:
     photo_gallery: 1
@@ -49,11 +56,6 @@ template_sets:
           label: "Administrativa"
         display:
           label: "Display Options"
-      suppress_create_entry:
-        type: 'checkbox'
-        label: 'Suppress Create Entry button and menu items for this blog?'
-        tag: 'IfSuppressCreateEntry?'
-        fieldset: admin
       use_featured_photo:
         type: checkbox
         label: 'Use Featured Photo?'
