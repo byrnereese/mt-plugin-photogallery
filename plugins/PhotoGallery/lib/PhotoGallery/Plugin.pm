@@ -137,7 +137,14 @@ sub load_menus {
         'manage:category' => { condition => sub { unless_gallery } },
         'manage:entry'  => { order => $entry_order, },
         'manage:ping'   => { condition => sub { unless_gallery } },
-        'manage:asset'  => { condition => sub { unless_gallery } },
+        'manage:asset'  => { 
+            condition => sub { 
+                my $blog = ( MT->instance->blog ? MT->instance->blog : undef );
+                return $blog && 
+                    in_gallery() && 
+                    !plugin()->get_config_value('suppress_manage_assets', 'blog:' . $blog->id )
+            },
+        },
         'manage:page'   => { condition => sub { unless_gallery } },
         'manage:folder' => { condition => sub { unless_gallery } },
     };

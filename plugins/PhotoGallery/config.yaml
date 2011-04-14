@@ -4,7 +4,7 @@ description: 'The Photo Gallery plugin allows users to easily create photo galle
 author_name: 'Byrne Reese'
 author_link: 'http://www.majordojo.com/'
 static_version: 1
-version: 2.6.1
+version: 2.7
 
 object_types:
   asset.photo: 'MT::Asset::ImagePhoto'
@@ -36,6 +36,11 @@ options:
     type: 'checkbox'
     label: 'Suppress Create Entry button and menu items for this blog?'
     tag: 'IfSuppressCreateEntry?'
+    scope: blog
+  suppress_manage_assets:
+    type: 'checkbox'
+    label: 'Suppress Manage Assets menu items for this blog?'
+    tag: 'IfSuppressManageAssets?'
     scope: blog
 
 template_sets:
