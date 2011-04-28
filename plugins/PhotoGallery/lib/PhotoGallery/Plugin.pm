@@ -100,16 +100,17 @@ sub load_list_filters {
 }
 
 sub load_menus {
+    my $app = shift;
     my $sc = MT->component('StyleCatcher');
     delete $sc->{registry}->{applications}->{cms}->{menus};
     my $entry_order = in_gallery() ? 2200 : 1000;
-    return {
+    my $newmenus = { 
         'create:entry' => {
             condition => sub { 
                 my $blog = ( MT->instance->blog ? MT->instance->blog : undef );
-                return $blog && 
-                    in_gallery() && 
-                    !plugin()->get_config_value('suppress_create_entry', 'blog:' . $blog->id )
+                my $suppress = ($blog && in_gallery() && 
+                                plugin()->get_config_value('suppress_create_entry', 'blog:' . $blog->id ) ? 1 : 0);
+                return !$suppress;
             },
         },
         'create:photo' => {
@@ -140,14 +141,15 @@ sub load_menus {
         'manage:asset'  => { 
             condition => sub { 
                 my $blog = ( MT->instance->blog ? MT->instance->blog : undef );
-                return $blog && 
-                    in_gallery() && 
-                    !plugin()->get_config_value('suppress_manage_assets', 'blog:' . $blog->id )
+                my $suppress = ($blog && in_gallery() && 
+                                plugin()->get_config_value('suppress_manage_assets', 'blog:' . $blog->id ) ? 1 : 0);
+                return !$suppress;
             },
         },
         'manage:page'   => { condition => sub { unless_gallery } },
         'manage:folder' => { condition => sub { unless_gallery } },
     };
+    return $newmenus;
 }
 
 sub xfrm_categories {
